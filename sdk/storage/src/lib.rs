@@ -21,6 +21,8 @@ pub mod data_lake;
 pub mod queue;
 #[cfg(feature = "table")]
 pub mod table;
+#[cfg(feature = "file")]
+pub mod file;
 
 pub use crate::core::*;
 #[cfg(feature = "account")]
@@ -33,3 +35,5 @@ pub use data_lake::*;
 pub use queue::*;
 #[cfg(feature = "table")]
 pub use table::*;
+#[cfg(feature = "file")]
+pub use file::*;

@@ -53,6 +53,7 @@ pub struct StorageAccountClient {
     queue_storage_url: Url,
     queue_storage_secondary_url: Url,
     filesystem_url: Url,
+    file_storage_url:Url,
 }
 
 fn get_sas_token_parms(sas_token: &str) -> Result<Vec<(String, String)>, url::ParseError> {
@@ -98,8 +99,11 @@ impl StorageAccountClient {
             .unwrap(),
             filesystem_url: Url::parse(&format!("https://{}.dfs.core.windows.net", &account))
                 .unwrap(),
+            file_storage_url: Url::parse(&format!("https://{}.file.core.windows.net", &account))
+                .unwrap(),
             storage_credentials: StorageCredentials::Key(account, key.into()),
             http_client,
+
         })
     }
 
@@ -110,6 +114,7 @@ impl StorageAccountClient {
         table_storage_url: &Url,
         queue_storage_url: &Url,
         filesystem_url: &Url,
+        file_storage_url: &Url,
     ) -> Arc<Self> {
         Self::new_emulator_with_account(
             http_client,
@@ -119,6 +124,7 @@ impl StorageAccountClient {
             filesystem_url,
             EMULATOR_ACCOUNT,
             EMULATOR_ACCOUNT_KEY,
+            file_storage_url,
         )
     }
 
@@ -129,12 +135,15 @@ impl StorageAccountClient {
         let queue_storage_url = Url::parse("http://127.0.0.1:10001").unwrap();
         let table_storage_url = Url::parse("http://127.0.0.1:10002").unwrap();
         let filesystem_url = Url::parse("http://127.0.0.1:10004").unwrap();
+        // TODO not sure abour the file storage url
+        let file_storage_url = Url::parse("http://127.0.0.1:10003").unwrap();
         Self::new_emulator(
             http_client,
             &blob_storage_url,
             &table_storage_url,
             &queue_storage_url,
             &filesystem_url,
+            &file_storage_url,
         )
     }
 
@@ -146,6 +155,7 @@ impl StorageAccountClient {
         filesystem_url: &Url,
         account: A,
         key: K,
+        file_storage_url: &Url,
     ) -> Arc<Self>
     where
         A: Into<String>,
@@ -160,7 +170,8 @@ impl StorageAccountClient {
             Url::parse(&format!("{}{}", queue_storage_url.as_str(), account)).unwrap();
         let filesystem_url =
             Url::parse(&format!("{}{}", filesystem_url.as_str(), account)).unwrap();
-
+        let file_storage_url =
+            Url::parse(&format!("{}{}", file_storage_url.as_str(), account)).unwrap();
         Arc::new(Self {
             blob_storage_url,
             table_storage_url,
@@ -169,6 +180,7 @@ impl StorageAccountClient {
             filesystem_url,
             storage_credentials: StorageCredentials::Key(account, key.into()),
             http_client,
+            file_storage_url:file_storage_url,
         })
     }
 
@@ -196,6 +208,7 @@ impl StorageAccountClient {
                 sas_token.as_ref(),
             )?),
             http_client,
+            file_storage_url: Url::parse(&format!("https://{}.file.core.windows.net", &account))?,
         }))
     }
 
@@ -227,6 +240,8 @@ impl StorageAccountClient {
                 .unwrap(),
             storage_credentials: StorageCredentials::BearerToken(bearer_token),
             http_client,
+            file_storage_url:Url::parse(&format!("https://{}.dfs.core.windows.net", &account))
+                .unwrap(),
         })
     }
 
@@ -243,6 +258,7 @@ impl StorageAccountClient {
                 table_endpoint,
                 queue_endpoint,
                 file_endpoint,
+                file_secondary_endpoint,
                 ..
             } => {
                 log::warn!("Both account key and SAS defined in connection string. Using only the provided SAS.");
@@ -257,6 +273,7 @@ impl StorageAccountClient {
                     queue_storage_secondary_url: get_endpoint_uri(queue_endpoint, &format!("{}-secondary", account), "queue")?,
                     filesystem_url: get_endpoint_uri(file_endpoint, account, "dfs")?,
                     http_client,
+                    file_storage_url: get_endpoint_uri(file_secondary_endpoint,account,"file")?,
                 }))
             }
             ConnectionString {
@@ -266,6 +283,7 @@ impl StorageAccountClient {
                 table_endpoint,
                 queue_endpoint,
                 file_endpoint,
+                file_secondary_endpoint,
                 ..
             } => Ok(Arc::new(Self {
                 storage_credentials: StorageCredentials::SASToken(get_sas_token_parms(sas_token)?),
@@ -275,6 +293,7 @@ impl StorageAccountClient {
                 queue_storage_secondary_url: get_endpoint_uri(queue_endpoint, &format!("{}-secondary", account), "queue")?,
                 filesystem_url: get_endpoint_uri(file_endpoint, account, "dfs")?,
                 http_client,
+                file_storage_url: get_endpoint_uri(file_secondary_endpoint,account,"file")?,
             })),
             ConnectionString {
                 account_name: Some(account),
@@ -283,6 +302,7 @@ impl StorageAccountClient {
                 table_endpoint,
                 queue_endpoint,
                 file_endpoint,
+                file_secondary_endpoint,
                 ..
             } => Ok(Arc::new(Self {
                 storage_credentials: StorageCredentials::Key(account.to_owned(), key.to_owned()),
@@ -292,6 +312,7 @@ impl StorageAccountClient {
                 queue_storage_secondary_url: get_endpoint_uri(queue_endpoint, &format!("{}-secondary", account), "queue")?,
                 filesystem_url: get_endpoint_uri(file_endpoint, account, "dfs")?,
                 http_client,
+                file_storage_url: get_endpoint_uri(file_secondary_endpoint,account,"file")?,
             })),
            _ => {
                 Err(crate::Error::GenericErrorWithText(
@@ -325,6 +346,8 @@ impl StorageAccountClient {
     pub fn filesystem_url(&self) -> &Url {
         &self.filesystem_url
     }
+
+    pub fn file_storage_url(&self) -> &Url{ &self.file_storage_url }
 
     pub fn shared_access_signature(
         &self,

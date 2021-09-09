@@ -115,7 +115,7 @@ pub fn run(config: Config) -> Result<()> {
 
         if let Some(api_version) = &config.api_version {
             let operations = create_mod(api_version);
-            let operations_path = path::join(&config.output_folder, "mod.rs").map_err(Error::Path)?;
+            let operations_path = path::join(&config.output_folder, "file_share").map_err(Error::Path)?;
             write_file(&operations_path, &operations, config.print_writing_file)?;
         }
     }

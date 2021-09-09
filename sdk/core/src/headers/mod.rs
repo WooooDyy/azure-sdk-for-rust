@@ -144,3 +144,9 @@ pub const NAMESPACE_ENABLED: &str = "x-ms-namespace-enabled";
 pub const MAX_ITEM_COUNT: &str = "x-ms-max-item-count";
 pub const ITEM_COUNT: &str = "x-ms-item-count";
 pub const ITEM_TYPE: &str = "x-ms-item-type";
+// TODO not sure
+pub const QUOTA: &str = "x-ms-share-quota";
+pub const REMAINING_RETENTION_DAYS: &str = "x-ms-remaining-retention-days";
+pub const ENABLED_PROTOCOLS: &str = "x-ms-enabled-protocols";
+pub const ROOT_SQUASH: &str = "x-ms-root-squash";
+
