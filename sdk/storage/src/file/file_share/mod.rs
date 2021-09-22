@@ -153,14 +153,17 @@ impl FileShare{
             }
         };
 
-        let remaining_retention_days = match headers.get_as_u64(REMAINING_RETENTION_DAYS){
-            Some(remaining_retention_days) => remaining_retention_days,
-            None =>{
-                return Err(crate::Error::MissingHeaderError(
-                    REMAINING_RETENTION_DAYS.to_owned(),
-                ))
-            }
-        };
+        // TODO
+        let remaining_retention_days = 0;
+
+        // let remaining_retention_days = match headers.get_as_u64(REMAINING_RETENTION_DAYS){
+        //     Some(remaining_retention_days) => remaining_retention_days,
+        //     None =>{
+        //         return Err(crate::Error::MissingHeaderError(
+        //             REMAINING_RETENTION_DAYS.to_owned(),
+        //         ))
+        //     }
+        // };
 
         // TODO
         let access_tier = None;

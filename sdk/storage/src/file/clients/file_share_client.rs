@@ -5,7 +5,8 @@ use http::method::Method;
 use http::request::{Builder, Request};
 use bytes::Bytes;
 use azure_core::prelude::*;
-use crate::file::file_share::requests::CreateBuilder;
+use crate::file::file_share::requests::{CreateBuilder, GetPropertiesBuilder};
+
 
 pub trait AsFileShareClient<CN: Into<String>>{
     fn as_file_share_client(&self,file_share_name: CN) -> Arc<FileShareClient>;
@@ -59,6 +60,10 @@ impl FileShareClient {
 
     pub fn create(&self) -> CreateBuilder {
         CreateBuilder::new(self)
+    }
+
+    pub fn get_properties(&self) -> GetPropertiesBuilder{
+        GetPropertiesBuilder::new(self)
     }
 
     // TODO other builders
