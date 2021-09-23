@@ -5,7 +5,7 @@ use http::method::Method;
 use http::request::{Builder, Request};
 use bytes::Bytes;
 use azure_core::prelude::*;
-use crate::file::file_share::requests::{CreateBuilder, GetPropertiesBuilder};
+use crate::file::file_share::requests::{CreateBuilder, GetPropertiesBuilder, SetFileShareACLBuilder};
 use crate::file_share::requests::GetFileShareACLBuilder;
 
 
@@ -68,6 +68,9 @@ impl FileShareClient {
     }
     pub fn get_acl(&self) -> GetFileShareACLBuilder{
         GetFileShareACLBuilder::new(self)
+    }
+    pub fn set_acl(&self)-> SetFileShareACLBuilder{
+        SetFileShareACLBuilder::new(self)
     }
 
     // TODO other builders

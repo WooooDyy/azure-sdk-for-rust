@@ -6,6 +6,7 @@ use http::header;
 use http::HeaderMap;
 use std::convert::TryFrom;
 use uuid::Uuid;
+use crate::StoredAccessPolicyList;
 
 #[derive(Debug, Clone)]
 pub struct GetFileShareACLResponse{
@@ -13,6 +14,8 @@ pub struct GetFileShareACLResponse{
     pub last_modified: DateTime<FixedOffset>,
     pub request_id: RequestId,
     pub date: DateTime<FixedOffset>,
+    pub stored_access_policy_list: StoredAccessPolicyList,
+
 
 }
 
@@ -58,12 +61,14 @@ impl GetFileShareACLResponse{
             }
         };
         let date = DateTime::parse_from_rfc2822(date)?;
+        let stored_access_policy_list = StoredAccessPolicyList::from_xml(&body)?;
 
         Ok(GetFileShareACLResponse{
             etag:etag.to_owned(),
             last_modified,
             request_id:Uuid::parse_str(request_id)?,
-            date
+            date,
+            stored_access_policy_list,
         })
     }
 }
