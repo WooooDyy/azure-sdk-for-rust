@@ -4,3 +4,6 @@ mod create_builder;
 pub use self::create_builder::CreateBuilder;
 mod get_properties_builder;
 pub use self::get_properties_builder::GetPropertiesBuilder;
+mod get_file_share_acl_builder;
+pub use get_file_share_acl_builder::GetFileShareACLBuilder;
+

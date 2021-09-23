@@ -6,6 +6,7 @@ use http::request::{Builder, Request};
 use bytes::Bytes;
 use azure_core::prelude::*;
 use crate::file::file_share::requests::{CreateBuilder, GetPropertiesBuilder};
+use crate::file_share::requests::GetFileShareACLBuilder;
 
 
 pub trait AsFileShareClient<CN: Into<String>>{
@@ -64,6 +65,9 @@ impl FileShareClient {
 
     pub fn get_properties(&self) -> GetPropertiesBuilder{
         GetPropertiesBuilder::new(self)
+    }
+    pub fn get_acl(&self) -> GetFileShareACLBuilder{
+        GetFileShareACLBuilder::new(self)
     }
 
     // TODO other builders
