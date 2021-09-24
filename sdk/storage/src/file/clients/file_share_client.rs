@@ -6,7 +6,7 @@ use http::request::{Builder, Request};
 use bytes::Bytes;
 use azure_core::prelude::*;
 use crate::file::file_share::requests::{CreateBuilder, GetPropertiesBuilder, SetFileShareACLBuilder};
-use crate::file_share::requests::{GetFileShareACLBuilder, DeleteFileShareBuilder};
+use crate::file_share::requests::{GetFileShareACLBuilder, DeleteFileShareBuilder,GetFileShareMetadataBuilder};
 
 
 pub trait AsFileShareClient<CN: Into<String>>{
@@ -74,6 +74,9 @@ impl FileShareClient {
     }
     pub fn delete(&self) -> DeleteFileShareBuilder{
         DeleteFileShareBuilder::new(self)
+    }
+    pub fn get_metadata(&self)->GetFileShareMetadataBuilder{
+        GetFileShareMetadataBuilder::new(self)
     }
 
     // TODO other builders
