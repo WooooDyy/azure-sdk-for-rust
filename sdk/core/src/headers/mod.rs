@@ -154,5 +154,8 @@ pub const FILE_PERMISSION_KEY: &str = "x-ms-file-permission-key";
 pub const FILE_ATTRIBUTES: &str = "x-ms-file-attributes";
 pub const FILE_CREATION_TIME: &str = "x-ms-file-creation-time";
 pub const FILE_LAST_WRITE_TIME: &str = "x-ms-file-last-write-time";
+pub const FILE_CHANGE_TIME: &str = "x-ms-file-change-time";
+pub const FILE_ID: &str = "x-ms-file-change-time";
+pub const FILE_PARENT_ID: &str = "x-ms-file-change-time";
 
 

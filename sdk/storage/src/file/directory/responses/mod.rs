@@ -1,2 +1,4 @@
 pub mod list_directories_and_files_response;
+pub mod get_directory_properties_response;
+
 pub use list_directories_and_files_response::ListDirectoriesAndFilesResponse;
