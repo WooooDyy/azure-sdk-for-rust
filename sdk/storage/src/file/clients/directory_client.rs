@@ -11,6 +11,7 @@ use crate::file::directory::requests::{CreateDirectoryBuilder};
 use crate::file::clients::FileShareClient;
 use crate::directory::requests::get_directory_properties_builder::GetDirectoryPropertiesBuilder;
 use crate::directory::requests::delete_directory_builder::DeleteDirectoryBuilder;
+use crate::directory::requests::get_directory_metadata_builder::GetDirectoryMetadataBuilder;
 
 pub trait AsDirectoryClient<CN: Into<String>>{
     fn as_directory_client(&self,directory_name: CN)-> Arc<DirectoryClient>;
@@ -78,6 +79,9 @@ impl DirectoryClient{
         DeleteDirectoryBuilder::new(self)
     }
 
+    pub fn get_directory_metadata(&self)->GetDirectoryMetadataBuilder{
+        GetDirectoryMetadataBuilder::new(self)
+    }
     pub(crate) fn prepare_request(
         &self,
         url: &str,
