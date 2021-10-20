@@ -1,7 +1,10 @@
 use azure_core::prelude::{FilePermissionKey, FileAttributes};
-use chrono::{DateTime, Utc};
+use chrono::{DateTime, Utc, TimeZone};
 use http::{HeaderMap, header};
 use azure_core::headers::{FILE_PERMISSION_KEY, FILE_ATTRIBUTES, FILE_CREATION_TIME, FILE_LAST_WRITE_TIME, FILE_CHANGE_TIME, FILE_ID, FILE_PARENT_ID};
+use xml::Element;
+use crate::core::parsing_xml::{cast_must, traverse, cast_optional};
+use azure_core::incompletevector::IncompleteVector;
 
 pub mod requests;
 pub mod responses;
@@ -137,6 +140,110 @@ impl Directory{
             file_id,
             file_parent_id,
         })
+    }
+
+    pub fn parse(elem: &Element) -> Result<Directory,crate::Error>{
+        let file_id = cast_optional::<String>(&elem,&["DirectoryId"]).unwrap();
+        let file_id = match file_id {
+            Some(f_id) => f_id,
+            None => "".to_string()
+        };
+        let name = cast_optional::<String>(elem,&["Name"]).unwrap();
+        let name = match name {
+            Some(name) => name,
+            None => "".to_string()
+        };
+
+        let last_modified = cast_optional::<DateTime<Utc>>(elem,&["Properties", "Last-Modified"]).unwrap();
+        let last_modified = match last_modified {
+            Some(last_modified) => last_modified,
+            None => DateTime::from_utc(DateTime::parse_from_str("0000 Jan 01 00:00:00.000 +0000", "%Y %b %d %H:%M:%S%.3f %z")?.naive_utc(),Utc)
+        };
+
+        let e_tag = cast_optional::<String>(elem, &["Properties", "Etag"]).unwrap();
+        let e_tag = match e_tag {
+            Some(e_tag) => e_tag,
+            None => "".to_string(),
+        };
+
+        let file_creation_time = cast_optional::<String>(elem, &["Properties", "CreationTime"]).unwrap();
+        let file_creation_time = match file_creation_time {
+            Some(file_creation_time) => {
+                let t = DateTime::parse_from_rfc3339(file_creation_time.as_str())?;
+                DateTime::from_utc(t.naive_utc(), Utc)
+            },
+            None => DateTime::from_utc(DateTime::parse_from_str("0000 Jan 01 00:00:00.000 +0000", "%Y %b %d %H:%M:%S%.3f %z")?.naive_utc(),Utc)
+        };
+
+        let file_last_write_time = cast_optional::<String>(elem, &["Properties", "LastWriteTime"]).unwrap();
+        let file_last_write_time = match file_last_write_time {
+            Some(file_last_write_time) => {
+                let t = DateTime::parse_from_rfc3339(file_last_write_time.as_str())?;
+                DateTime::from_utc(t.naive_utc(), Utc)
+            },
+            None => DateTime::from_utc(DateTime::parse_from_str("0000 Jan 01 00:00:00.000 +0000", "%Y %b %d %H:%M:%S%.3f %z")?.naive_utc(),Utc)
+        };
+
+        let file_change_time = cast_optional::<String>(elem, &["Properties", "ChangeTime"]).unwrap();
+        let file_change_time = match file_change_time {
+            Some(file_change_time) => {
+                let t = DateTime::parse_from_rfc3339(file_change_time.as_str())?;
+                DateTime::from_utc(t.naive_utc(), Utc)
+            },
+            None => DateTime::from_utc(DateTime::parse_from_str("0000 Jan 01 00:00:00.000 +0000", "%Y %b %d %H:%M:%S%.3f %z")?.naive_utc(),Utc)
+        };
+
+
+        // let file_last_access_time =  cast_must::<String>(elem, &["Properties", "LastAccessTime"])?;
+        // let file_last_access_time = DateTime::parse_from_rfc3339(file_last_access_time.as_str())?;
+        // let file_last_access_time = DateTime::from_utc(file_last_access_time.naive_utc(), Utc);
+
+        let file_attributes = cast_optional::<String>(elem, &["Attributes"]).unwrap();
+        let file_attributes = match file_attributes {
+            Some(file_attributes) => file_attributes,
+            None => "".to_string(),
+        };
+
+        let file_permission_key = cast_optional::<String>(elem, &["PermissionKey"]).unwrap();
+        let file_permission_key = match file_permission_key {
+            Some(file_permission_key) => file_permission_key,
+            None => "".to_string(),
+        };
+
+
+
+        Ok(
+            Directory{
+                name,
+                last_modified,
+                e_tag,
+                file_permission_key,
+                file_attributes,
+                file_creation_time,
+                file_last_write_time,
+                file_change_time,
+                file_id,
+                file_parent_id:"".into(),
+            }
+        )
+    }
+    pub(crate) fn incomplete_vector_from_directory_response(
+        body:&str,
+    )->Result<IncompleteVector<Directory>,crate::Error>{
+        let elem: Element = body.parse()?;
+
+        let mut v = Vec::new();
+        for directory in traverse(&elem, &["Entries", "Directory"], true)? {
+            v.push(Directory::parse(directory)?);
+        }
+
+        let next_marker = match cast_optional::<String>(&elem, &["NextMarker"])? {
+            Some(ref nm) if nm.is_empty() => None,
+            Some(nm) => Some(nm.into()),
+            None => None,
+        };
+
+        Ok(IncompleteVector::new(next_marker, v))
     }
 }
 
