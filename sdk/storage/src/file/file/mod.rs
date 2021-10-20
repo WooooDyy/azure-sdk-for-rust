@@ -1,19 +1,17 @@
-use azure_core::prelude::{FilePermissionKey, FileAttributes};
-use chrono::{DateTime, Utc, TimeZone};
+use chrono::{DateTime, Utc};
 use http::{HeaderMap, header};
 use azure_core::headers::{FILE_PERMISSION_KEY, FILE_ATTRIBUTES, FILE_CREATION_TIME, FILE_LAST_WRITE_TIME, FILE_CHANGE_TIME, FILE_ID, FILE_PARENT_ID};
 use xml::Element;
-use crate::core::parsing_xml::{cast_must, traverse, cast_optional};
+use crate::core::parsing_xml::{cast_optional, traverse};
 use azure_core::incompletevector::IncompleteVector;
 
 pub mod requests;
 pub mod responses;
-pub mod prelude;
-
 
 #[derive(Debug,Clone)]
-pub struct Directory {
+pub struct File {
     pub name: String,
+    pub content_length:u64,
     pub last_modified: DateTime<Utc>,
     pub e_tag: String,
     pub file_permission_key: String,
@@ -24,16 +22,16 @@ pub struct Directory {
     pub file_id: String,
     pub file_parent_id: String,
 }
-
-impl AsRef<str> for Directory{
+impl AsRef<str> for File{
     fn as_ref(&self) -> &str {
         &self.name
     }
 }
-impl Directory{
-    pub fn new(name: &str) -> Directory{
-        Directory{
+impl File{
+    pub fn new(name: &str) -> File{
+        File{
             name:name.to_owned(),
+            content_length:0,
             last_modified: Utc::now(),
             e_tag: "".to_owned(),
             file_permission_key: "".to_owned(),
@@ -45,13 +43,19 @@ impl Directory{
             file_parent_id: "".to_owned(),
         }
     }
+
     pub(crate) fn from_response<NAME>(
         name: NAME,
         headers: &HeaderMap,
-    ) -> Result<Directory,crate::Error>
-    where
-        NAME: Into<String>,
+    ) -> Result<File,crate::Error>
+        where
+            NAME: Into<String>,
     {
+        let content_length = match headers.get(header::CONTENT_LENGTH) {
+            Some(content_length) => content_length.to_str()?.parse::<u64>()?,
+            None => 0
+        };
+
         let last_modified = match headers.get(header::LAST_MODIFIED) {
             Some(last_modified) => last_modified.to_str()?,
             None => {
@@ -128,8 +132,9 @@ impl Directory{
             None => return Err(crate::Error::MissingHeaderError(FILE_PARENT_ID.to_owned())),
         };
 
-        Ok(Directory{
+        Ok(File{
             name:name.into(),
+            content_length,
             last_modified,
             e_tag,
             file_permission_key,
@@ -142,7 +147,7 @@ impl Directory{
         })
     }
 
-    pub fn parse(elem: &Element) -> Result<Directory,crate::Error>{
+    pub fn parse(elem: &Element) -> Result<File,crate::Error>{
         let file_id = cast_optional::<String>(&elem,&["DirectoryId"]).unwrap();
         let file_id = match file_id {
             Some(f_id) => f_id,
@@ -152,6 +157,12 @@ impl Directory{
         let name = match name {
             Some(name) => name,
             None => "".to_string()
+        };
+
+        let content_length = cast_optional::<String>(elem,&["Properties", "Content-Length"]).unwrap();
+        let content_length = match content_length {
+            Some(content_length) => content_length.parse::<u64>()?,
+            None => 0
         };
 
         let last_modified = cast_optional::<DateTime<Utc>>(elem,&["Properties", "Last-Modified"]).unwrap();
@@ -213,8 +224,9 @@ impl Directory{
 
 
         Ok(
-            Directory{
+            File{
                 name,
+                content_length,
                 last_modified,
                 e_tag,
                 file_permission_key,
@@ -228,14 +240,14 @@ impl Directory{
         )
     }
 
-    pub(crate) fn incomplete_vector_from_directory_response(
+    pub fn incomplete_vector_from_file_response(
         body:&str,
-    )->Result<IncompleteVector<Directory>,crate::Error>{
+    )->Result<IncompleteVector<File>,crate::Error>{
         let elem: Element = body.parse()?;
 
         let mut v = Vec::new();
-        for directory in traverse(&elem, &["Entries", "Directory"], true)? {
-            v.push(Directory::parse(directory)?);
+        for file in traverse(&elem, &["Entries", "File"], true)? {
+            v.push(File::parse(file)?);
         }
 
         let next_marker = match cast_optional::<String>(&elem, &["NextMarker"])? {
@@ -246,5 +258,6 @@ impl Directory{
 
         Ok(IncompleteVector::new(next_marker, v))
     }
-}
 
+
+}

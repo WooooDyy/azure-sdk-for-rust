@@ -6,6 +6,7 @@ use azure_core::AppendToUrlQuery;
 use azure_core::headers::{add_optional_header, request_id_from_headers};
 use http::{Method, StatusCode};
 use crate::file::directory::Directory;
+use crate::file::file::File;
 
 
 #[derive(Debug, Clone)]
@@ -109,12 +110,13 @@ impl<'a> ListDirectoriesAndFilesBuilder<'a>{
         let body = std::str::from_utf8(response.body())?;
         debug!("body == {}",body);
 
-        let incomplete_vector =Directory::incomplete_vector_from_directory_response(&body)?;
-
+        let incomplete_vector_directory =Directory::incomplete_vector_from_directory_response(&body)?;
+        let incomplete_vector_file =  File::incomplete_vector_from_file_response(&body)?;
         let request_id = request_id_from_headers(response.headers())?;
         Ok(
             ListDirectoriesAndFilesResponse{
-                incomplete_vector,
+                incomplete_vector_directory,
+                incomplete_vector_file,
                 request_id,
             }
         )
