@@ -28,6 +28,12 @@ mod sequence_number_condition;
 mod source_lease_id;
 mod timeout;
 mod user_agent;
+mod quota;
+mod file_permission;
+mod file_permission_key;
+mod file_attributes;
+mod file_creation_time;
+mod file_last_write_time;
 
 pub use activity_id::ActivityId;
 pub use ba512_range::BA512Range;
@@ -59,3 +65,10 @@ pub use sequence_number_condition::SequenceNumberCondition;
 pub use source_lease_id::SourceLeaseId;
 pub use timeout::Timeout;
 pub use user_agent::UserAgent;
+pub use quota::Quota;
+pub use file_permission::FilePermission;
+pub use file_permission_key::FilePermissionKey;
+pub use file_attributes::FileAttributes;
+pub use file_creation_time::FileCreationTime;
+pub use file_last_write_time::FileLastWriteTime;
+

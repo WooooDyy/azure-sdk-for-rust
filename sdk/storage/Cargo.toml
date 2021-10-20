@@ -39,17 +39,19 @@ azure_identity = { path = "../identity" }
 reqwest = "0.11"
 
 [features]
-default = ["account", "blob", "queue", "table", "data_lake"]
-test_e2e = ["account", "blob", "queue", "table", "data_lake"]
-test_integration = ["account", "blob", "queue", "table", "data_lake"]
+default = ["account", "blob", "queue", "table", "data_lake", "file"]
+test_e2e = ["account", "blob", "queue", "table", "data_lake", "file"]
+test_integration = ["account", "blob", "queue", "table", "data_lake", "file"]
 account = []
 azurite_workaround = []
 blob = []
 queue = []
 table = []
 data_lake = []
+file = []
 
 # This section specifies the required features for the examples.
+
 [[example]]
 name="table_00"
 required-features = ["table"]
@@ -149,3 +151,9 @@ required-features=["queue"]
 [[example]]
 name="data_lake_00"
 required-features=["data_lake"]
+[[example]]
+name="fileshares_list"
+required-features = ["file"]
+[[example]]
+name="fileshare_create"
+required-features = ["file"]
