@@ -68,7 +68,6 @@ impl DirectoryClient{
 
     }
 
-    // TODO builders
     pub fn create_directory(&self) ->CreateDirectoryBuilder{
         CreateDirectoryBuilder::new(self)
     }
