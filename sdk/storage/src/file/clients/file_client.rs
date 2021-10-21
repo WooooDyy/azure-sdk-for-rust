@@ -7,6 +7,7 @@ use http::request::Builder;
 use http::Method;
 use crate::Error;
 use url::Url;
+use crate::file::file::requests::create_file_builder::CreateFileBuilder;
 
 pub trait AsFileClient<CN: Into<String>>{
     fn as_file_client(&self,file_name: CN)-> Arc<FileClient>;
@@ -45,22 +46,53 @@ impl FileClient{
         self.storage_client().storage_account_client()
     }
 
-    pub(crate) fn url_with_segments<'a,I>(
+    pub(crate) fn url_with_dir_path_segments<'a,I>(
         &'a self,
         segments: I,
+        dir_path: &'a str
     )-> Result<url::Url,url::ParseError>
         where
             I: IntoIterator<Item = &'a str>,
     {
         self.file_share_client
             .url_with_segments(
+                Some(dir_path)
+                    .into_iter()
+                    .chain(segments)
+            )
+    }
+
+    pub(crate) fn url_with_segments<'a,I>(
+        &'a self,
+        segments: I,
+        dir_path: &'a str
+    )-> Result<url::Url,url::ParseError>
+        where
+            I: IntoIterator<Item = &'a str>,
+    {
+        if dir_path=="" {
+            self.file_share_client
+                .url_with_segments(
+                    Some(self.file_name.as_str())
+                               .into_iter()
+                               .chain(segments),
+                )
+        }
+        else{
+            self.url_with_dir_path_segments(
                 Some(self.file_name.as_str())
                     .into_iter()
-                    .chain(segments))
+                    .chain(segments),
+                dir_path
+            )
+        }
+
 
     }
     // TODO builders
-
+    pub fn create_file(&self)->CreateFileBuilder{
+        CreateFileBuilder::new(self)
+    }
 
     pub(crate) fn prepare_request(
         &self,

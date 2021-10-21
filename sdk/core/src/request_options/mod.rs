@@ -34,6 +34,8 @@ mod file_permission_key;
 mod file_attributes;
 mod file_creation_time;
 mod file_last_write_time;
+mod content_length;
+mod f_type;
 
 pub use activity_id::ActivityId;
 pub use ba512_range::BA512Range;
@@ -71,4 +73,6 @@ pub use file_permission_key::FilePermissionKey;
 pub use file_attributes::FileAttributes;
 pub use file_creation_time::FileCreationTime;
 pub use file_last_write_time::FileLastWriteTime;
+pub use content_length::ContentLength;
+pub use f_type::FType;
 

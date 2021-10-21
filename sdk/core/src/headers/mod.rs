@@ -157,5 +157,7 @@ pub const FILE_LAST_WRITE_TIME: &str = "x-ms-file-last-write-time";
 pub const FILE_CHANGE_TIME: &str = "x-ms-file-change-time";
 pub const FILE_ID: &str = "x-ms-file-change-time";
 pub const FILE_PARENT_ID: &str = "x-ms-file-change-time";
+pub const FILE_CONTENT_LENGTH: &str = "x-ms-content-length";
+pub const TYPE: &str = "x-ms-type";
 
 
