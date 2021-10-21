@@ -36,7 +36,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     let file_share_client = storage_client.as_file_share_client("test-file-share");
 
-    let directory_client = file_share_client.as_directory_client("test-directory-1");
+    let directory_client = file_share_client.as_directory_client("test-directory-4");
 
     // TODO fill in the x-ms-file-permission header
     let file_permission = FilePermission::from("inherit");
@@ -46,6 +46,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     let response = directory_client
         .create_directory()
+        .dir_path("test-directory-2/test-directory-3")
         .file_permission(file_permission)
         .file_attributes(file_arrtibutes)
         .file_creation_time(file_creation_time)

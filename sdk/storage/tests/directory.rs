@@ -27,6 +27,7 @@ async fn create_and_delete_directory(){
 
     let create_response = directory
         .create_directory()
+        .dir_path("test-directory-2/test-directory-3")
         .file_permission(file_permission)
         .file_attributes(file_arrtibutes)
         .file_creation_time(file_creation_time)
@@ -38,6 +39,7 @@ async fn create_and_delete_directory(){
 
     let metadata = directory
         .get_directory_metadata()
+        .dir_path("test-directory-2/test-directory-3")
         .execute()
         .await
         .unwrap();
@@ -45,6 +47,7 @@ async fn create_and_delete_directory(){
 
     let properties = directory
         .get_directory_properties()
+        .dir_path("test-directory-2/test-directory-3")
         .execute()
         .await
         .unwrap();
@@ -53,6 +56,7 @@ async fn create_and_delete_directory(){
 
     let delete_response = directory
         .delete_directory()
+        .dir_path("test-directory-2/test-directory-3")
         .execute()
         .await
         .unwrap();

@@ -36,12 +36,11 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
 
     let file_share_client = storage_client.as_file_share_client("test-file-share");
 
-    let directory_client = file_share_client.as_directory_client("test-directory-1");
+    let directory_client = file_share_client.as_directory_client("test-directory-4");
 
-    let tmp = directory_client
-        .get_directory_properties();
     let res = directory_client
         .get_directory_properties()
+        .dir_path("test-directory-2/test-directory-3")
         .execute()
         .await?;
     println!("\nget_properties() =={:?}", res);

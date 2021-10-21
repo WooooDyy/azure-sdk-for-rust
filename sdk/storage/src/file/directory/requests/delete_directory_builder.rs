@@ -8,6 +8,7 @@ pub struct DeleteDirectoryBuilder<'a>{
     directory_client: &'a DirectoryClient,
     client_request_id: Option<ClientRequestId<'a>>,
     timeout: Option<Timeout>,
+    dir_path:&'a str,
 }
 
 impl<'a> DeleteDirectoryBuilder<'a>{
@@ -16,14 +17,16 @@ impl<'a> DeleteDirectoryBuilder<'a>{
             directory_client,
             client_request_id: None,
             timeout: None,
+            dir_path:"",
         }
     }
     setters!{
         client_request_id: ClientRequestId<'a> => Some(client_request_id),
         timeout: Timeout => Some(timeout),
+        dir_path: &'a str => dir_path,
     }
     pub async fn execute(self) -> Result<(), Box<dyn std::error::Error + Sync + Send>> {
-        let mut url = self.directory_client.url_with_segments(None)?;
+        let mut url = self.directory_client.url_with_segments(None,self.dir_path)?;
 
         url.query_pairs_mut().append_pair("restype","directory");
 

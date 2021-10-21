@@ -11,6 +11,7 @@ pub struct GetDirectoryMetadataBuilder<'a> {
     directory_client: & 'a DirectoryClient,
     client_request_id: Option<ClientRequestId<'a>>,
     timeout: Option<Timeout>,
+    dir_path:&'a str
 }
 
 impl<'a> GetDirectoryMetadataBuilder<'a>{
@@ -19,16 +20,18 @@ impl<'a> GetDirectoryMetadataBuilder<'a>{
             directory_client,
             client_request_id:None,
             timeout:None,
+            dir_path:"",
         }
     }
     setters!{
         client_request_id: ClientRequestId<'a> => Some(client_request_id),
         timeout: Timeout=> Some(timeout),
+        dir_path: &'a str => dir_path,
     }
     pub async fn execute(
         &self,
     )->Result<GetDirectoryMetadataResponse, Box<dyn std::error::Error + Send + Sync>>{
-        let mut url = self.directory_client.url_with_segments(None)?;
+        let mut url = self.directory_client.url_with_segments(None,self.dir_path)?;
         url.query_pairs_mut().append_pair("restype","directory");
         url.query_pairs_mut().append_pair("comp", "metadata");
         self.timeout.append_to_url_query(&mut url);

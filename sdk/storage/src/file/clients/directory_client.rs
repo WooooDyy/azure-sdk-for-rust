@@ -53,18 +53,48 @@ impl DirectoryClient{
         self.storage_client().storage_account_client()
     }
 
+    pub(crate) fn url_with_dir_path_segments<'a,I>(
+        &'a self,
+        segments: I,
+        dir_path: &'a str
+    )-> Result<url::Url,url::ParseError>
+        where
+            I: IntoIterator<Item = &'a str>,
+    {
+        self.file_share_client
+            .url_with_segments(
+                Some(dir_path)
+                    .into_iter()
+                    .chain(segments)
+            )
+    }
+
     pub(crate) fn url_with_segments<'a,I>(
         &'a self,
         segments: I,
+         dir_path: &'a str
     )-> Result<url::Url,url::ParseError>
     where
         I: IntoIterator<Item = &'a str>,
     {
-        self.file_share_client
-            .url_with_segments(
-                Some(self.directory_name.as_str())
+        if dir_path=="" {
+            self.file_share_client
+                .url_with_segments(Some(
+                    self.directory_name.as_str()
+                )
                     .into_iter()
-                    .chain(segments))
+                    .chain(segments),
+                )
+        }
+        else{
+            self.url_with_dir_path_segments(
+            Some(self.directory_name.as_str())
+                .into_iter()
+                .chain(segments),
+            dir_path
+        )
+        }
+
 
     }
 
