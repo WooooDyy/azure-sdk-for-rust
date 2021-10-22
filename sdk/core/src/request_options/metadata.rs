@@ -3,6 +3,7 @@ use bytes::Bytes;
 use http::request::Builder;
 use http::HeaderMap;
 use std::collections::HashMap;
+use crate::headers::META_PREFIX;
 
 #[derive(Debug, Clone)]
 pub struct Metadata(HashMap<String, Bytes>);
@@ -75,6 +76,17 @@ impl AddAsHeader for &Metadata {
 impl From<&HeaderMap> for Metadata {
     fn from(header_map: &HeaderMap) -> Self {
         let mut metadata = Metadata::new();
+
+        // for (name, value) in header_map.iter() {
+        //     let name = name.as_str();
+        //     println!("{:#?}", name);
+        //     if let Some(name) = name.starts_with(META_PREFIX) {
+        //         if let Ok(value) = value.to_str() {
+        //             metadata.insert(name.to_string(), value.to_string());
+        //         }
+        //     }
+        // }
+
         header_map
             .iter()
             .map(|header| (header.0.as_str(), header.1.as_bytes()))
@@ -86,6 +98,6 @@ impl From<&HeaderMap> for Metadata {
                 );
             });
 
-        metadata
+       return metadata;
     }
 }

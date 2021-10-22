@@ -10,6 +10,7 @@ use url::Url;
 use crate::file::file::requests::create_file_builder::CreateFileBuilder;
 use crate::file::file::requests::get_file_builder::GetFileBuilder;
 use crate::file::file::requests::get_file_properties_builder::GetFilePropertiesBuilder;
+use crate::file::file::requests::get_file_metadata_builder::GetFileMetadataBuilder;
 
 pub trait AsFileClient<CN: Into<String>>{
     fn as_file_client(&self,file_name: CN)-> Arc<FileClient>;
@@ -101,6 +102,9 @@ impl FileClient{
     }
     pub fn get_file_properties(&self) -> GetFilePropertiesBuilder{
         GetFilePropertiesBuilder::new(self)
+    }
+    pub fn get_file_metadata(&self) -> GetFileMetadataBuilder{
+        GetFileMetadataBuilder::new(self)
     }
 
     pub(crate) fn prepare_request(
