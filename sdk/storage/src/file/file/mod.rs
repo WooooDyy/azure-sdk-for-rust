@@ -44,6 +44,7 @@ impl File{
         }
     }
 
+    // TODO parsing more properties when getting file properties
     pub(crate) fn from_response<NAME>(
         name: NAME,
         headers: &HeaderMap,

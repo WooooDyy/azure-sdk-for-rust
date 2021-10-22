@@ -9,6 +9,7 @@ use crate::Error;
 use url::Url;
 use crate::file::file::requests::create_file_builder::CreateFileBuilder;
 use crate::file::file::requests::get_file_builder::GetFileBuilder;
+use crate::file::file::requests::get_file_properties_builder::GetFilePropertiesBuilder;
 
 pub trait AsFileClient<CN: Into<String>>{
     fn as_file_client(&self,file_name: CN)-> Arc<FileClient>;
@@ -97,6 +98,9 @@ impl FileClient{
 
     pub fn get_file(&self) -> GetFileBuilder{
         GetFileBuilder::new(self)
+    }
+    pub fn get_file_properties(&self) -> GetFilePropertiesBuilder{
+        GetFilePropertiesBuilder::new(self)
     }
 
     pub(crate) fn prepare_request(
