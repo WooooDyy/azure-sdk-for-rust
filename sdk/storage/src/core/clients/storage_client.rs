@@ -64,6 +64,19 @@ impl StorageClient {
         )
     }
 
+    pub(crate) fn file_url_with_segments<'a, I>(
+        &'a self,
+        segments: I,
+    ) -> Result<url::Url, url::ParseError>
+        where
+            I: IntoIterator<Item = &'a str>,
+    {
+        Self::url_with_segments(
+            self.storage_account_client.file_storage_url().to_owned(),
+            segments,
+        )
+    }
+
     pub(crate) fn queue_url_with_segments<'a, I>(
         &'a self,
         segments: I,
@@ -112,6 +125,18 @@ impl StorageClient {
     pub fn get_queue_service_stats(&self) -> crate::queue::requests::GetQueueServiceStatsBuilder {
         crate::queue::requests::GetQueueServiceStatsBuilder::new(self)
     }
+
+    #[cfg(feature = "file")]
+    pub fn list_fileshares(&self) -> crate::file::file_share::requests::ListFileSharesBuilder{
+        crate::file_share::requests::ListFileSharesBuilder::new(self)
+    }
+
+    // #[cfg(feature = "file")]
+    // pub fn create_fileshare(&self,
+    //                         file_share_name: String) -> crate::file::file_share::requests::CreateBuilder{
+    //     crate::file_share::requests::CreateBuilder::new(
+    //         crate::file::clients::FileShareClient::new(self,file_share_name));
+    // }
 
     #[allow(dead_code)]
     pub(crate) fn prepare_request(

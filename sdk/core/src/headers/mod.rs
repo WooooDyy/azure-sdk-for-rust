@@ -144,3 +144,22 @@ pub const NAMESPACE_ENABLED: &str = "x-ms-namespace-enabled";
 pub const MAX_ITEM_COUNT: &str = "x-ms-max-item-count";
 pub const ITEM_COUNT: &str = "x-ms-item-count";
 pub const ITEM_TYPE: &str = "x-ms-item-type";
+// TODO not sure
+pub const QUOTA: &str = "x-ms-share-quota";
+pub const REMAINING_RETENTION_DAYS: &str = "x-ms-remaining-retention-days";
+pub const ENABLED_PROTOCOLS: &str = "x-ms-enabled-protocols";
+pub const ROOT_SQUASH: &str = "x-ms-root-squash";
+pub const FILE_PERMISSION: &str = "x-ms-file-permission";
+pub const FILE_PERMISSION_KEY: &str = "x-ms-file-permission-key";
+pub const FILE_ATTRIBUTES: &str = "x-ms-file-attributes";
+pub const FILE_CREATION_TIME: &str = "x-ms-file-creation-time";
+pub const FILE_LAST_WRITE_TIME: &str = "x-ms-file-last-write-time";
+pub const FILE_CHANGE_TIME: &str = "x-ms-file-change-time";
+pub const FILE_ID: &str = "x-ms-file-change-time";
+pub const FILE_PARENT_ID: &str = "x-ms-file-change-time";
+pub const FILE_CONTENT_LENGTH: &str = "x-ms-content-length";
+pub const TYPE: &str = "x-ms-type";
+pub const WRITE: &str = "x-ms-write";
+pub const RANGE: &str = "x-ms-range";
+
+

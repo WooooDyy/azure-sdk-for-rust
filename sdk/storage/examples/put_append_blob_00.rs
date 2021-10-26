@@ -23,6 +23,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .nth(2)
         .expect("please specify blob name as command line parameter");
 
+
     let http_client = new_http_client();
 
     let storage_account_client =
@@ -32,7 +33,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
         .as_container_client(&container)
         .as_blob_client(&blob_name);
 
-    //let data = b"something";
+    let data = b"something";
 
     let mut metadata = Metadata::new();
 
