@@ -13,6 +13,7 @@ use crate::file::file::requests::get_file_properties_builder::GetFilePropertiesB
 use crate::file::file::requests::get_file_metadata_builder::GetFileMetadataBuilder;
 use crate::file::file::requests::set_file_properties_builder::SetFilePropertiesBuilder;
 use crate::file::file::requests::delete_file_builder::DeleteFileBuilder;
+use crate::file::file::requests::put_range_builder::PutRangeBuilder;
 // use azure_core::prelude::FileProperties;
 
 pub trait AsFileClient<CN: Into<String>>{
@@ -115,7 +116,9 @@ impl FileClient{
     ) -> SetFilePropertiesBuilder{
         SetFilePropertiesBuilder::new(self)
     }
-
+    pub fn put_range(&self, data: impl Into<Bytes>,) -> PutRangeBuilder{
+        PutRangeBuilder::new(self,data)
+    }
     pub fn delete_fle(&self) -> DeleteFileBuilder{
         DeleteFileBuilder::new(self)
     }

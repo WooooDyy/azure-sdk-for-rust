@@ -517,7 +517,7 @@ fn string_to_sign(
                 add_if_exists(h, IF_MATCH),
                 add_if_exists(h, IF_NONE_MATCH),
                 add_if_exists(h, IF_UNMODIFIED_SINCE),
-                add_if_exists(h, RANGE),
+                add_if_exists(h, http::header::RANGE),
                 canonicalize_header(h),
                 canonicalized_resource(account, u)
             )

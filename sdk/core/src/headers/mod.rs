@@ -159,5 +159,7 @@ pub const FILE_ID: &str = "x-ms-file-change-time";
 pub const FILE_PARENT_ID: &str = "x-ms-file-change-time";
 pub const FILE_CONTENT_LENGTH: &str = "x-ms-content-length";
 pub const TYPE: &str = "x-ms-type";
+pub const WRITE: &str = "x-ms-write";
+pub const RANGE: &str = "x-ms-range";
 
 

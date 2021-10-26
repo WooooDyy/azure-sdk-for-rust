@@ -37,6 +37,7 @@ mod file_last_write_time;
 mod content_length;
 mod f_type;
 mod file_properties;
+mod write;
 
 pub use activity_id::ActivityId;
 pub use ba512_range::BA512Range;
@@ -76,5 +77,6 @@ pub use file_creation_time::FileCreationTime;
 pub use file_last_write_time::FileLastWriteTime;
 pub use content_length::ContentLength;
 pub use f_type::FType;
+pub use write::Write;
 // pub use file_properties::FileProperties;
 
