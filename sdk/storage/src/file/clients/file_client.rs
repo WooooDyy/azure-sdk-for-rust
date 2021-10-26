@@ -5,12 +5,14 @@ use azure_core::{HttpClient, Request};
 use bytes::Bytes;
 use http::request::Builder;
 use http::Method;
-use crate::Error;
+use crate::{Error, Properties};
 use url::Url;
 use crate::file::file::requests::create_file_builder::CreateFileBuilder;
 use crate::file::file::requests::get_file_builder::GetFileBuilder;
 use crate::file::file::requests::get_file_properties_builder::GetFilePropertiesBuilder;
 use crate::file::file::requests::get_file_metadata_builder::GetFileMetadataBuilder;
+use crate::file::file::requests::set_file_properties_builder::SetFilePropertiesBuilder;
+use crate::file::file::requests::delete_file_builder::DeleteFileBuilder;
 
 pub trait AsFileClient<CN: Into<String>>{
     fn as_file_client(&self,file_name: CN)-> Arc<FileClient>;
@@ -106,7 +108,15 @@ impl FileClient{
     pub fn get_file_metadata(&self) -> GetFileMetadataBuilder{
         GetFileMetadataBuilder::new(self)
     }
-
+    pub fn set_file_properties<'a>(
+        &'a self,
+        properties: Option<&'a Properties<'a, 'a>>,
+    ) -> SetFilePropertiesBuilder{
+        SetFilePropertiesBuilder::new(self,properties)
+    }
+    pub fn delete_fle(&self) -> DeleteFileBuilder{
+        DeleteFileBuilder::new(self)
+    }
     pub(crate) fn prepare_request(
         &self,
         url: &str,
