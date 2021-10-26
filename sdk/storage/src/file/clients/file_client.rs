@@ -13,6 +13,7 @@ use crate::file::file::requests::get_file_properties_builder::GetFilePropertiesB
 use crate::file::file::requests::get_file_metadata_builder::GetFileMetadataBuilder;
 use crate::file::file::requests::set_file_properties_builder::SetFilePropertiesBuilder;
 use crate::file::file::requests::delete_file_builder::DeleteFileBuilder;
+// use azure_core::prelude::FileProperties;
 
 pub trait AsFileClient<CN: Into<String>>{
     fn as_file_client(&self,file_name: CN)-> Arc<FileClient>;
@@ -110,10 +111,11 @@ impl FileClient{
     }
     pub fn set_file_properties<'a>(
         &'a self,
-        properties: Option<&'a Properties<'a, 'a>>,
+        // file_properties: Option<&'a FileProperties<'a, 'a>>,
     ) -> SetFilePropertiesBuilder{
-        SetFilePropertiesBuilder::new(self,properties)
+        SetFilePropertiesBuilder::new(self)
     }
+
     pub fn delete_fle(&self) -> DeleteFileBuilder{
         DeleteFileBuilder::new(self)
     }
