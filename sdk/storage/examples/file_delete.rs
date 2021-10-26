@@ -40,7 +40,7 @@ async fn main() -> Result<(), Box<dyn Error + Send + Sync>> {
     let file_client = file_share_client.as_file_client("test-file-1");
 
     let response = file_client
-        .delete_fle()
+        .delete_file()
         .dir_path("test-directory-2/test-directory-3")
         .execute()
         .await?;

@@ -119,7 +119,7 @@ impl FileClient{
     pub fn put_range(&self, data: impl Into<Bytes>,) -> PutRangeBuilder{
         PutRangeBuilder::new(self,data)
     }
-    pub fn delete_fle(&self) -> DeleteFileBuilder{
+    pub fn delete_file(&self) -> DeleteFileBuilder{
         DeleteFileBuilder::new(self)
     }
     pub(crate) fn prepare_request(
